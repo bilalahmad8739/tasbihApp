@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 // import 'package:vibration/vibration.dart';
 
@@ -192,7 +193,7 @@ class _CounterScreenState extends State<CounterScreen> {
                   children: [
                     InkWell(
                       onTap: () {
-                        // _vibrate();
+                        _vibrate();
                          setState(() {
                            istap=true;
                          });
@@ -269,13 +270,18 @@ class _CounterScreenState extends State<CounterScreen> {
     );
 
   }
-//   void _vibrate() async {
-//   if (await Vibration.hasVibrator() ?? false) {
-//     // Check if the device has a vibrator
-//     Vibration.vibrate();
-//   } else {
-//     // Handle the case where vibration is not supported
-//     print('Vibration is not supported on this device.');
-//   }
-// }
+   void _vibrate() async {
+    if (await Vibration.hasVibrator() ?? false) {
+      // Check if the device has a vibrator
+      Vibration.vibrate();
+      Future.delayed(const Duration(milliseconds: 500), () {
+        setState(() {
+          istap = false;
+        });
+      });
+    } else {
+      // Handle the case where vibration is not supported
+      print('Vibration is not supported on this device.');
+    }
+  }
 }

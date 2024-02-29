@@ -270,6 +270,7 @@ class _CounterScreenState extends State<CounterScreen> {
     );
 
   }
+  //vibrate fun
    void _vibrate() async {
     if (await Vibration.hasVibrator() ?? false) {
       // Check if the device has a vibrator

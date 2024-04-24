@@ -2,21 +2,34 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tasbihapp/core/getx/homescreenget.dart';
+import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/alertdialog.dart';
+import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/customalertdialog.dart';
 import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/tabbarContainer.dart';
 import 'package:vibration/vibration.dart';
 
 // import 'package:vibration/vibration.dart';
 
 class CounterScreen extends StatefulWidget {
-  final HomeScreenController homeScreenController = Get.put(HomeScreenController());
+  String values= '';
+  final HomeScreenController homeScreenController =
+      Get.put(HomeScreenController());
 
   @override
   _CounterScreenState createState() => _CounterScreenState();
 }
 
 class _CounterScreenState extends State<CounterScreen> {
+  void updateValue(String value)
+  {
+   setState(() {
+      widget.values=value;
+
+   });
+
+  }
   // bool istap = false;
 
   @override
@@ -30,13 +43,16 @@ class _CounterScreenState extends State<CounterScreen> {
 
   @override
   Widget build(BuildContext context) {
- 
     return Obx(
-      () => 
-      Scaffold(
+      () => Scaffold(
         backgroundColor: widget.homeScreenController.containerColor.value,
         appBar: AppBar(
-          title: const Text('Tasbih Lite'),
+          title: Column(
+            children: [
+              const Text('Tasbih Lite'),
+              Text("Remindar :${widget.homeScreenController.reminder.value}"),
+            ],
+          ),
           centerTitle: true,
           leading: Builder(
             builder: (BuildContext context) {
@@ -84,102 +100,108 @@ class _CounterScreenState extends State<CounterScreen> {
             ],
           ),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
-              child: Container(
-                height: 300,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  // color: _containerColor,
-      
-                  color: Colors.blue,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      alignment: Alignment.centerRight,
-                      height: 60,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        child: Obx(
-                          () {
-                            return Text(
-                              '${widget.homeScreenController.count}',
-                              style: const TextStyle(fontSize: 50.0),
-                            );
-                          },
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
+                child: Container(
+                  height: 300,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    // color: _containerColor,
+          
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        alignment: Alignment.centerRight,
+                        height: 60,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Colors.grey,
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: Obx(
+                            () {
+                              return Text(
+                                '${widget.homeScreenController.count}',
+                                style: const TextStyle(fontSize: 50.0),
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 50, vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              widget.homeScreenController.removeOneCount();
-                            },
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                widget.homeScreenController.removeOneCount();
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: const Icon(Icons.replay),
                               ),
-                              child: const Icon(Icons.replay),
                             ),
-                          ),
-                          const SizedBox(width: 16.0),
-                          InkWell(
-                            onTap: () {
-                              widget.homeScreenController.resetCounter();
-                            },
-                            child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: const BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
+                            const SizedBox(width: 16.0),
+                            InkWell(
+                              onTap: () {
+                                showResetConfirmationDialog(
+                                    context,
+                                    "Reset Counter",
+                                    "Are you sure to reset the count?", () {
+                                  widget.homeScreenController.resetCounter();
+                                });
+                                // widget.homeScreenController.resetCounter();
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                child: const Icon(Icons.restart_alt_sharp),
                               ),
-                              child: const Icon(Icons.restart_alt_sharp),
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        widget.homeScreenController.incrementCounter();
-                      },
-                      child: Container(
-                        height: 100,
-                        width: 100,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+                          ],
                         ),
                       ),
-                    ),
-                  ],
+                      InkWell(
+                        onTap: () async {
+                          widget.homeScreenController.incrementCounter();
+                        },
+                        child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 250),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: 
-                  Row(
+              const SizedBox(height: 250),
+              Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
@@ -203,6 +225,15 @@ class _CounterScreenState extends State<CounterScreen> {
                       InkWell(
                           onTap: () {
                             widget.homeScreenController.colorChange(2);
+                          showDialog(
+                context: context,
+                builder: (context) {
+                  return MyAlertDialog(
+                    onvalueEntered: updateValue,
+
+                  );
+                },
+              );
                           },
                           child: tabbarContainer(
                             istap: widget.homeScreenController.isTabTapped[2],
@@ -210,11 +241,9 @@ class _CounterScreenState extends State<CounterScreen> {
                           )),
                       InkWell(
                           onTap: () {
-                           
-                              widget.homeScreenController.colorChangeBackground();
-      
+                            widget.homeScreenController.colorChangeBackground();
+          
                             widget.homeScreenController.colorChange(3);
-                         
                           },
                           child: tabbarContainer(
                             istap: widget.homeScreenController.isTabTapped[3],
@@ -222,9 +251,8 @@ class _CounterScreenState extends State<CounterScreen> {
                           )),
                     ],
                   ))
-                
-            
-          ],
+            ],
+          ),
         ),
       ),
     );

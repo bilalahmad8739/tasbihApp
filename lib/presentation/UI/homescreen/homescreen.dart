@@ -13,7 +13,8 @@ import 'package:vibration/vibration.dart';
 // import 'package:vibration/vibration.dart';
 
 class CounterScreen extends StatefulWidget {
-  String values= '';
+  String values = '';
+  int? loop;
   final HomeScreenController homeScreenController =
       Get.put(HomeScreenController());
 
@@ -22,13 +23,10 @@ class CounterScreen extends StatefulWidget {
 }
 
 class _CounterScreenState extends State<CounterScreen> {
-  void updateValue(String value)
-  {
-   setState(() {
-      widget.values=value;
-
-   });
-
+  void updateValue(String value) {
+    setState(() {
+      widget.values = value;
+    });
   }
   // bool istap = false;
 
@@ -104,13 +102,14 @@ class _CounterScreenState extends State<CounterScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 70),
                 child: Container(
                   height: 300,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     // color: _containerColor,
-          
+
                     color: Colors.blue,
                     borderRadius: BorderRadius.circular(20),
                   ),
@@ -184,6 +183,32 @@ class _CounterScreenState extends State<CounterScreen> {
                       InkWell(
                         onTap: () async {
                           widget.homeScreenController.incrementCounter();
+                          if(widget.homeScreenController.count.value == int.parse(widget.homeScreenController.reminder.value))
+                          {
+                            return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Goal Reached'),
+            content: Text('Congratulations! You have reached your goal.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context); // Close the dialog
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+                          }
+                          // else
+                          // {
+                          //   print("Not selected");
+                          // }
+
+
                         },
                         child: Container(
                           height: 100,
@@ -192,6 +217,8 @@ class _CounterScreenState extends State<CounterScreen> {
                             shape: BoxShape.circle,
                             color: Colors.white,
                           ),
+                          // child: Icon(Icons.add,size: 26,
+                          // weight: 2),
                         ),
                       ),
                     ],
@@ -225,15 +252,16 @@ class _CounterScreenState extends State<CounterScreen> {
                       InkWell(
                           onTap: () {
                             widget.homeScreenController.colorChange(2);
-                          showDialog(
-                context: context,
-                builder: (context) {
-                  return MyAlertDialog(
-                    onvalueEntered: updateValue,
-
-                  );
-                },
-              );
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return MyAlertDialog(
+                                  onvalueEntered: updateValue,
+                                  homeScreenController:
+                                      widget.homeScreenController,
+                                );
+                              },
+                            );
                           },
                           child: tabbarContainer(
                             istap: widget.homeScreenController.isTabTapped[2],
@@ -242,7 +270,7 @@ class _CounterScreenState extends State<CounterScreen> {
                       InkWell(
                           onTap: () {
                             widget.homeScreenController.colorChangeBackground();
-          
+
                             widget.homeScreenController.colorChange(3);
                           },
                           child: tabbarContainer(

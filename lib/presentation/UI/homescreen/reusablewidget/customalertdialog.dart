@@ -54,7 +54,7 @@ void showResetConfirmationDialog(
                   style: TextStyle(color: Colors.green),
                 ),
                 style: ElevatedButton.styleFrom(
-                  primary: Colors.transparent,
+                //  primary: Colors.transparent,
                   elevation: 0,
                 ),
               ),

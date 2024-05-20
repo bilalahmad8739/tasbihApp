@@ -38,6 +38,7 @@ dependencies:
   vibration: ^1.8.4
   shared_preferences: ^2.2.3
   get: ^4.6.6
+  clay_containers: ^0.3.4
   # modal_bottom_sheet: ^2.1.0
   # audioplayers: ^5.2.1
 

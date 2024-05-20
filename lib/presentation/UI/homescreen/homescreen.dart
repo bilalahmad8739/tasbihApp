@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:clay_containers/clay_containers.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -8,7 +9,6 @@ import 'package:tasbihapp/core/getx/homescreenget.dart';
 import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/alertdialog.dart';
 import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/customalertdialog.dart';
 import 'package:tasbihapp/presentation/UI/homescreen/reusablewidget/tabbarContainer.dart';
-import 'package:vibration/vibration.dart';
 
 // import 'package:vibration/vibration.dart';
 
@@ -110,7 +110,7 @@ class _CounterScreenState extends State<CounterScreen> {
                   decoration: BoxDecoration(
                     // color: _containerColor,
 
-                    color: Colors.blue,
+                    color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Column(
@@ -147,8 +147,9 @@ class _CounterScreenState extends State<CounterScreen> {
                                 widget.homeScreenController.removeOneCount();
                               },
                               child: Container(
-                                height: 50,
-                                width: 50,
+                               
+                               
+                                
                                 decoration: const BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: Colors.white,
@@ -183,40 +184,53 @@ class _CounterScreenState extends State<CounterScreen> {
                       InkWell(
                         onTap: () async {
                           widget.homeScreenController.incrementCounter();
-                          if(widget.homeScreenController.count.value == int.parse(widget.homeScreenController.reminder.value))
-                          {
+                          if (widget.homeScreenController.count.value ==
+                              int.parse(
+                                  widget.homeScreenController.reminder.value)) {
                             return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Goal Reached'),
-            content: Text('Congratulations! You have reached your goal.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context); // Close the dialog
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text('Goal Reached'),
+                                  content: Text(
+                                      'Congratulations! You have reached your goal.'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(
+                                            context); // Close the dialog
+                                      },
+                                      child: Text('OK'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
                           // else
                           // {
                           //   print("Not selected");
                           // }
-
-
                         },
                         child: Container(
                           height: 100,
                           width: 100,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            color: const Color(0xFFEFEEEE),
+      //  borderRadius: BorderRadius.circular(12.0),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.white.withOpacity(0.1),
+                                  offset: const Offset(-6.0, -6.0),
+                                  blurRadius: 16.0,
+                                ),
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.4),
+                                  offset: const Offset(6.0, 6.0),
+                                  blurRadius: 16.0,
+                                ),
+                              ]),
                           // child: Icon(Icons.add,size: 26,
                           // weight: 2),
                         ),
@@ -233,7 +247,7 @@ class _CounterScreenState extends State<CounterScreen> {
                     children: [
                       InkWell(
                         onTap: () {
-                          _vibrate();
+                          //  _vibrate();
                           widget.homeScreenController.colorChange(0);
                         },
                         child: tabbarContainer(
@@ -284,17 +298,5 @@ class _CounterScreenState extends State<CounterScreen> {
         ),
       ),
     );
-  }
-
-  //vibrate fun
-  void _vibrate() async {
-    if (await Vibration.hasVibrator() ?? false) {
-      // Check if the device has a vibrator
-      Vibration.vibrate();
-      Future.delayed(const Duration(milliseconds: 500), () {});
-    } else {
-      // Handle the case where vibration is not supported
-      print('Vibration is not supported on this device.');
-    }
   }
 }
